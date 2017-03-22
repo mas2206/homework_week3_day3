@@ -18,11 +18,18 @@ class Artist
     @id = id_string.to_i
   end
 
+  def self.all()
+    sql = "SELECT * FROM artists"
+    artist_hashes = SqlRunner.run(sql)
+    artist_objects = artist_hashes.map {|person| Artist.new(person)}
+    return artist_objects
+  end
+
   def albums()
     sql = "SELECT * FROM albums WHERE artist_id = #{@id}"
-    order_hashes = SqlRunner.run(sql)
-    order_objects = order_hashes.map {|thing| Album.new(thing)}
-    return order_objects
+    artist_hashes = SqlRunner.run(sql)
+    artist_objects = artist_hashes.map {|thing| Album.new(thing)}
+    return artist_objects
   end
 
   def edit()
@@ -41,13 +48,6 @@ class Artist
     artist_hash = result.first
     artist = Artist.new(artist_hash)
     return artist
-  end
-
-  def self.all()
-    sql = "SELECT * FROM artists"
-    artist_hashes = SqlRunner.run(sql)
-    artist_objects = artist_hashes.map {|person| Artist.new(person)}
-    return artist_objects
   end
 
   def self.delete_all()
