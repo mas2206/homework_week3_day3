@@ -18,6 +18,13 @@ class Artist
     @id = id_string.to_i
   end
 
+  def albums()
+    sql = "SELECT * FROM albums WHERE artist_id = #{@id}"
+    order_hashes = SqlRunner.run(sql)
+    order_objects = order_hashes.map {|thing| Album.new(thing)}
+    return order_objects
+  end
+
   def self.all()
     sql = "SELECT * FROM artists"
     artist_hashes = SqlRunner.run(sql)
