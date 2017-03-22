@@ -1,3 +1,6 @@
+require_relative('../db/sql_runner')
+require_relative('artist')
+
 class Album
 
   def initialize(options)
@@ -5,6 +8,31 @@ class Album
     @title = options['title']
     @genre = options['genre']
     @artist_id = options['artist_id'].to_i
+  end
+
+  def save()
+    sql = "INSERT INTO albums (
+    title,
+    genre,
+    artist_id)
+    VALUES (
+    '#{@title}',
+    '#{@genre}',
+    #{@artist_id})
+    RETURNING id;"
+    @id = SqlRunner.run(sql).first['id'].to_i
+  end
+
+  def self.all()
+    sql = "SELECT * FROM albums"
+    album_hashes = SqlRunner.run(sql)
+    album_objects = album_hashes.map {|item| Album.new(item)}
+    return album_objects
+  end
+
+  def self.delete_all()
+    sql = "DELETE FROM albums"
+    SqlRunner.run(sql)
   end
 
 end
